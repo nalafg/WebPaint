@@ -27,8 +27,9 @@
 		<!-- <img id="pingu" src="burbujas.png"> -->
 	</div>
 	<script type="text/javascript">
+		var pause = false;
 		var canvas = null, ctx = null,x=0,y=0; 
-		var LEFT = 1,UP = 0, RIGHT = 2, DOWN = 3;
+		var LEFT = 1,UP = 0, RIGHT = 2, DOWN = 3,SPACE =4;
 		var lastPress = RIGHT, speed = 2;
 		var player = null, food = null;
 		var score = 0;
@@ -43,13 +44,22 @@
 		}());
 
 		function drawScore(){
-		    ctx.font = "16px Arial";
+			ctx.font = "16px Arial";
 		    ctx.fillStyle = "#0095DD";
 		    ctx.fillText("Score: "+score, 8, 20);
+			
+		}
+
+		function drawPause(){
+			//if(pause==true){
+			    ctx.font = "30px Arial";
+			    ctx.fillStyle = "#0095DD";
+			    ctx.fillText("Score: "+PAUSE, 50, 50);
+			//}
 		}
 
 		function adScore(){
-			score += 20;
+			score += 10;
 		}
 
 		function Rectangle(x,y,w,h,c){
@@ -85,46 +95,58 @@
 			food.paint(ctx);
 
 			drawScore();
+			drawPause();
 		}
 
 		function upt(){
 
-			if (lastPress==UP) {
-				player.y -=speed;
-				if(player.y<0){
-					player.y = canvas.height;
-				}
+			if (lastPress==SPACE) {
+					if(pause==false){pause=true;}
+					else if(pause==true){pause=false;}
 			}
-			if (lastPress==DOWN) {
-				player.y += speed;
-				if(player.y>=canvas.height){
-					player.y = -10;
-				}
-			}
-			if (lastPress==LEFT) {
-				player.x -= speed;
-				if (player.x<0) {
-					player.x = canvas.width;
-				}
-			}
-			if (lastPress==RIGHT) {
-				player.x += speed;
-				if(player.x>canvas.width){
-					player.x = -10;
-				}
-			}  
 			
-			if (player.intersects(food)) {
-				food.x = random(canvas.width-10);
-				food.y = random(canvas.height-10);
+			if(pause!=true){
+				if (lastPress==UP) {
+					player.y -=speed;
+					if(player.y<0){
+						player.y = canvas.height;
+					}
+				}
+				if (lastPress==DOWN) {
+					player.y += speed;
+					if(player.y>=canvas.height){
+						player.y = -10;
+					}
+				}
+				if (lastPress==LEFT) {
+					player.x -= speed;
+					if (player.x<0) {
+						player.x = canvas.width;
+					}
+				}
+				if (lastPress==RIGHT) {
+					player.x += speed;
+					if(player.x>canvas.width){
+						player.x = -10;
+					}
+				}    
+				
+				if (player.intersects(food)) {
+					food.x = random(canvas.width-10);
+					food.y = random(canvas.height-10);
+				}
 			}
+			
 		}
 
 		//se repite mucho
 		function run(){
 			window.requestAnimationFrame(run)
-			upt();
+			
+				upt();
+			
 			paint(ctx);
+			
 		}
 
 		function init(){
@@ -151,6 +173,9 @@
 			}
 			if(e.keyCode== 68 || e.keyCode == 39){
 				lastPress = RIGHT;
+			}
+			if(e.keyCode== 31 || e.keyCode == 32){
+				lastPress = SPACE;
 			}
 		})
 		 
