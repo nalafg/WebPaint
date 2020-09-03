@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Canvas
+	</title>
+	<style type="text/css">
+		.container{
+			width: 80%;
+			background-color: gray;
+			margin: auto;
+			min-height: 500px;
+		}
+		canvas{
+			background-color:white;
+			margin: 5px;
+		}	
+	</style>
+
+</head>
+<body>
+
+	<div class="container">
+		<canvas id="canvas" width="400" height="300">
+			Opps tu navegador no soporta Canvas
+		</canvas>
+		<img id="sat" src="saturno.PNG">
+	</div>
+	<script type="text/javascript">
+		window.onload = function(){
+		var canvas = document.getElementById('canvas');
+		if (canvas.getContext){
+			var ctx = canvas.getContext('2d');
+			/*
+			//cuadrado rojo
+			ctx.fillStyle = "rgb(200,0,0)";
+			ctx.fillRect(10,15,30,30);
+			//cuadrado azul
+			ctx.fillStyle = "rgba(0,0,200,0.5)";
+			ctx.fillRect(25,30,30,30);
+			*/
+			/*
+			//LINEA
+			ctx.moveTo(0,0);
+			ctx.lineTo(200,100);
+			ctx.stroke();
+			*/
+			/*
+			//circulo
+			ctx.beginPath();
+			ctx.arc(95,95,40,0,2*Math.PI);
+			ctx.stroke();
+			*/
+			/*
+			//FONT
+			ctx.font = "30px Arial"
+			ctx.fillStyle = "rgba(200,0,0,1)";
+			ctx.strokeText("Hola mundo", 10, 50,);
+			*/
+			/*
+			// creando gradianes
+			var grd = ctx.createLinearGradient(0, 0, 200, 0);
+			grd.addColorStop(0, "black");
+			grd.addColorStop(1, "white");
+			// rellenar gradianes
+			ctx.fillStyle = grd;
+			ctx.fillRect(20, 20, 150, 150);
+			*/
+			/*
+			var grd = ctx.createRadialGradient(75, 50, 5, 90, 60, 100);
+			grd.addColorStop(0, "black");
+			grd.addColorStop(1, "white");
+
+			// Fill with gradient
+			ctx.fillStyle = grd;
+			ctx.fillRect(10, 10, 140, 90);
+			*/
+			
+			/*var img = document.getElementById('sat');
+			ctx.drawImage(img,0,0);*/
+
+			//paint.web-------------------------------------------------
+			/*
+			var isDrawing = false;
+			var structure = 0;
+			var ratius = 10;
+
+			var red = 150;
+			var green = 0;
+			var blue = 0;
+			var colores = new String( "rgb("+red+","+green+","+blue+")" )
+
+			addEventListener('mousedown',function(evt){ 
+				isDrawing = true;
+			});
+			addEventListener('mouseup',function(evt){ 
+				isDrawing = false;
+			});
+
+
+			addEventListener('keydown', function (e) {
+		        if (e.keyCode === 96) {
+		          structure = 0;
+		        } else if (e.keyCode === 97) {
+		          structure = 1;
+		        } else {
+		          return;
+		        }
+		        e.preventDefault();
+		        layer.batchDraw();
+		    });
+
+			addEventListener('mousemove',function(evt){ 
+ 				ctx.fillStyle = colores; 
+	            ctx.beginPath();
+
+				if (isDrawing === true && structure === 0) {
+	                ctx.arc(evt.offsetX, evt.offsetY,ratius,0,2*Math.PI)
+	                ctx.fill();
+	            }
+	            else if (isDrawing == true && structure === 1) {
+	                ctx.fillRect(evt.offsetX, evt.offsetY,ratius*2,ratius*2);
+	            }
+
+            });
+			*/
+            //-------------------------------------------------------------
+            //avatar
+			/*ctx.beginPath();
+			ctx.fillStyle = "rgb(0,0,0,)";
+			ctx.arc(220,60,60,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(219,180,130)";
+			ctx.fillRect(200,70,40,50);
+			ctx.beginPath();
+
+			ctx.fillStyle = "rgb(219,180,130)";
+			ctx.fillRect(125,200,40,50);
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(219,180,130)";
+			ctx.fillRect(275,200,40,50);
+			ctx.beginPath();
+
+			ctx.fillStyle = "rgb(0,0,0)";
+			ctx.fillRect(150,120,140,80);
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(0,0,0)";
+			ctx.fillRect(180,120,80,180);
+			ctx.beginPath();
+
+         	ctx.fillStyle = "rgb(219,180,130)";
+			ctx.arc(220,60,50,0,1.3*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+
+			ctx.fillStyle = "rgb(0,0,0)";
+			ctx.arc(200,50,40,15,1.5*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+
+			ctx.fillStyle = "rgb(0,0,0)";
+			ctx.arc(200,60,6,0,2*Math.PI);
+			ctx.fill();
+         	ctx.beginPath();
+         	ctx.fillStyle = "rgb(0,0,0)";
+			ctx.arc(240,60,6,0,2*Math.PI);
+			ctx.fill();
+         	ctx.beginPath();*/
+			//-----------------------------------------------
+			//paisaje
+			/*ctx.fillStyle = "rgb(0,255,250)";
+			ctx.fillRect(5,5,380,200);
+			ctx.beginPath();
+
+			var grd = ctx.createLinearGradient(0, 0, 400, 0);
+			grd.addColorStop(0, "rgb(0,255,250)");
+			grd.addColorStop(1, "white");
+			// rellenar gradianes
+			ctx.fillStyle = grd;
+			ctx.fillRect(5,5,380,200);
+			//-----------------------
+			ctx.fillStyle = "rgb(206,138,36)";
+			ctx.arc(220,210,50,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(206,138,36)";
+			ctx.arc(280,210,60,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(206,138,36)";
+			ctx.arc(350,210,40,0,2*Math.PI);
+			ctx.fill();
+			ctx.beginPath();
+			//-----------------------
+			ctx.fillStyle = "rgb(38,217,55)";
+			ctx.fillRect(5,200,390,95);
+			ctx.beginPath();
+
+			ctx.fillStyle = "rgb(255,255,255)";
+			ctx.arc(350,50,40,0,2*Math.PI);
+			ctx.fill();
+         	ctx.beginPath();
+			ctx.fillStyle = "rgb(255,203,15)";
+			ctx.arc(350,50,30,0,2*Math.PI);
+			ctx.fill();
+         	ctx.beginPath();
+
+         	//----------------------------------
+         	var px1 = 55;
+         	var px2 = 15;
+         	var px3 = 95;
+         	var px4 = 125;
+         	var px5 = 155;
+
+         	ctx.fillStyle = "rgb(111,66,0)";
+			ctx.fillRect(50,190,10,40);
+			ctx.beginPath();
+            ctx.fillStyle = "rgb(111,66,0)";
+			ctx.fillRect(90,180,10,40);
+			ctx.beginPath();
+            ctx.fillStyle = "rgb(111,66,0)";
+			ctx.fillRect(10,190,10,40);
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(111,66,0)";
+			ctx.fillRect(120,180,10,40);
+			ctx.beginPath();
+            ctx.fillStyle = "rgb(111,66,0)";
+			ctx.fillRect(150,190,10,40);
+			ctx.beginPath();
+
+
+			ctx.fillStyle = "rgb(30,128,60)";
+			ctx.moveTo(px1,140);
+			ctx.lineTo(px1-10,200);
+			ctx.lineTo(px1+10,200);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(30,128,60)";
+			ctx.moveTo(px2,140);
+			ctx.lineTo(px2-10,200);
+			ctx.lineTo(px2+10,200);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(30,128,60)";
+			ctx.moveTo(px3,140);
+			ctx.lineTo(px3-10,200);
+			ctx.lineTo(px3+10,200);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(30,128,60)";
+			ctx.moveTo(px4,140);
+			ctx.lineTo(px4-10,200);
+			ctx.lineTo(px4+10,200);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.fillStyle = "rgb(30,128,60)";
+			ctx.moveTo(px5,140);
+			ctx.lineTo(px5-10,200);
+			ctx.lineTo(px5+10,200);
+			ctx.fill();
+			ctx.beginPath();*/
+
+			//------------------------------------------------------------------
+			}
+		}
+		
+		
+
+
+//###################################################################################
+	</script>
+
+</body>
+</html>
