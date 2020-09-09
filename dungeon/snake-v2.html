@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Dead Dungeon
+	</title>
+	<style type="text/css">
+		.container{
+			width: 90%;
+			background-color: gray;
+			margin: auto;
+			min-height: 20%;
+		}
+		.game{
+			background-color: black;
+			margin: auto;
+		} 
+		canvas{
+			background-color: black;
+			margin:10px;
+		}
+		/*img{
+			visibility: hidden;
+		}*/
+	</style>
+</head>
+<body class="game">
+	<div class="container">
+		<canvas id="canvas" width="850" height="300"></canvas>
+		
+	</div>
+	<script type="text/javascript">
+		var pause = false;
+		var canvas = null, ctx = null,x=0,y=0; 
+		var UP = 0,LEFT = 1,RIGHT = 2,DOWN = 3,SPACE =4,movent = false;
+		var lastPress = movent;
+		var player = null;  
+		var wall = null;
+		
+		var food = Array();
+		var walldos = Array();
+		var keys = Array();
+		var doors = Array();
+
+		var salida = null;
+		
+		var score = 0;
+		var llaves = 0;
+		var life = 2;
+
+		var jugador = new Image();
+		jugador.src = 'jugador.png';
+		var manzana = new Image();
+		manzana.src = 'manzana.png';
+		var llave = new Image();
+		llave.src = 'llave.png';
+		var pantalla = new Image();
+		pantalla.src = 'pantalla.png';
+
+		var fechaHora = new Date();
+		var segundos = fechaHora.getSeconds();
+
+		var time=false;
+		
+		var spriteY1=50;
+		var spriteY2=70;
+
+		var ponk = false;
+		var combate = false;
+
+		var defense = false;
+//*****************************************************************************************
+		var spritename = "";
+
+		var ratas = Array();
+		var rata = new Image();
+		rata.src = 'Rat.png';
+
+		var skull = Array();
+		var sk= new Image();
+		sk.src = 'Skull.png';
+
+		
+
+
+		//[0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9]
+		var maze = [
+		  [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],//0
+		  [2,1,2,0,3,3,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,3,2],//1
+		  [2,0,2,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0,2,0,0,0,0,3,0,0,2],//2
+		  [2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2],//3
+		  [2,2,2,2,2,2,2,0,2,0,2,2,2,2,2,2,2,2,2,2,0,2,0,0,0,0,0,0,0,2],//4
+		  [2,0,0,4,2,0,0,0,2,0,2,3,0,0,0,2,0,0,0,2,2,2,7,0,0,0,0,0,0,2],//5
+		  [2,6,2,2,2,0,2,2,2,0,2,3,0,2,0,2,0,2,0,2,0,5,0,0,0,0,0,0,4,2],//6
+		  [2,0,0,0,0,0,2,4,0,0,2,6,0,2,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,2],//7
+		  [2,2,2,2,2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],//8
+		  [2,0,0,0,0,0,0,0,0,0,2,0,0,2,0,0,0,5,0,0,0,0,2,0,0,0,0,0,0,2],//9
+		  [2,0,2,2,2,2,2,2,2,0,2,0,2,2,0,2,0,2,2,2,2,0,2,0,2,2,2,2,0,2],//10
+		  [2,0,2,4,3,3,6,0,2,0,2,0,0,0,0,2,6,2,0,0,0,0,2,0,2,0,4,2,0,2],//11
+		  [2,0,2,2,2,2,2,0,2,0,2,2,2,2,2,2,0,2,0,2,2,2,2,0,2,0,2,2,0,2],//12
+		  [2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0,0,0,2,0,2,0,0,0,0,2],//13
+		  [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,2,0,2,2,2,2,5,2],//14
+		  [2,0,0,0,0,0,2,0,5,0,6,0,0,2,0,0,0,0,0,0,2,0,0,0,2,0,7,0,0,2],//15
+		  [2,0,2,2,2,0,2,0,2,0,2,2,0,2,0,2,2,2,2,0,2,2,2,2,2,0,0,0,0,2],//16
+		  [2,0,2,7,0,0,2,0,2,0,2,2,0,2,0,2,3,3,2,0,0,0,0,0,0,0,0,0,0,2],//17
+		  [2,0,2,0,0,0,2,0,2,0,4,2,0,2,0,2,2,6,2,2,2,2,2,2,2,2,2,2,2,2],//18
+		  [2,0,2,0,4,4,2,0,2,0,2,2,0,2,0,0,0,0,0,0,0,0,0,2,0,0,3,0,0,2],//19
+		  [2,0,2,2,2,2,2,0,2,0,2,2,0,2,2,2,2,2,2,2,2,2,6,2,0,3,0,0,3,2],//20
+		  [2,0,0,0,0,0,0,0,2,0,6,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,2],//21
+		  [2,5,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,2],//22
+		  [2,0,0,0,0,0,0,0,6,0,0,0,0,6,0,0,0,0,6,0,0,0,0,5,0,0,0,0,0,2],//23
+		  [2,0,0,0,0,0,0,0,6,0,0,0,0,6,0,0,0,0,6,0,0,0,0,2,2,2,2,0,0,2],//24
+		  [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,2],//25
+		  [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,7,0,0,2],//26
+		  [2,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,2],//27
+		  [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,2,0,0,0,0,4,2],//28
+		  [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2] //29
+		];
+
+		window.requestAnimationFrame = (function(){
+			return window.requestAnimationFrame || 
+				window.mozRequestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				function (callback){
+					window.setTimeout(callback,17);
+				}
+		}());
+
+		function drawScore(){
+
+			if(life<=4){
+				ctx.font = "16px Arial";
+			    ctx.fillStyle = "red";
+			    ctx.fillText("Life: "+life, 320, 20);
+			}
+			else{
+				ctx.font = "16px Arial";
+			    ctx.fillStyle = "#00FF4E";
+			    ctx.fillText("Life: "+life, 320, 20);
+			} 
+
+		    ctx.font = "16px Arial";
+		    ctx.fillStyle = "#0095DD";
+		    ctx.fillText("Score: "+score, 320, 40);
+			
+		}
+
+		function drawPause(){
+			if(pause==true&&life>0){
+			    ctx.font = "30px Arial";
+			    ctx.fillStyle = "#0095DD";
+			    ctx.fillText("GAME PAUSE", 100, 100);
+			    ctx.fillText("LIFE: "+life, 100, 150);
+			    ctx.fillText("LEVEL: 0", 100, 200);
+			}
+		}
+
+		function drawGameOver(){
+			if(life==0){
+			    ctx.font = "30px Arial";
+			    ctx.fillStyle = "red";
+			    ctx.fillText("You Dead", 140, 150);
+			}
+			else if(player.intersects(salida)&&life>0){
+				ctx.font = "30px Arial";
+			    ctx.fillStyle = "red";
+			    ctx.fillText("Felicidades, escapaste del laberinto", 140, 150);
+			}
+		}
+
+		function adScore(){
+			//score debe ser igual a la diferencia de niveles entre jugador y enemigo *10
+			score += 10;
+		}
+
+		function Rectangle(x,y,w,h,c){
+			this.x=x;
+			this.y=y;
+			this.w=w;
+			this.h=h;
+			this.c=c;
+
+			this.paint =function(ctx){
+				ctx.fillStyle=this.c;
+				ctx.fillRect(this.x,this.y,this.w,this.h);
+				
+			}
+
+			this.intersects = function(target){
+				if( this.x < target.x + target.w  && 
+					this.x + this.w > target.x    &&
+					this.y < target.y + target.h  &&
+					this.y + this.h > target.y){
+					return true;
+				}
+			}
+		}
+
+		function ratio(x,y,i,j){
+			if((i<x-1||i>x+1)||(j<y-1||j>y+1)){return true;}
+			else{false;}
+		}
+
+		function tictac(){
+			setTimeout(function(){ 
+				if(time==true){time=false;}
+					else{time=true;}}, 200);	
+			console.log(time);
+			
+		}
+		function combat(){
+
+			//spritename = "sk";
+			if(spritename=="sk"){
+				ctx.drawImage(sk,500,spriteY1, 250, 250);
+				console.log(spriteY1);
+			}
+			else{
+				ctx.drawImage(rata,500,spriteY1, 250, 250);
+			}
+			
+		}
+
+		function paintscreen(ctx){
+			for (var i = doors.length - 1; i >= 0; i--) {
+				if(ponk == true){
+					pantalla.src = 'pantallad.png';
+					//console.log("pap");
+				}
+				else{
+					pantalla.src = 'pantalla.png';
+				}
+			}
+			ctx.drawImage(pantalla,420,0, 380, 290);
+			if(combate == true){
+					combat();
+			}
+		}
+
+		function paint(ctx){
+			var x2=player.x/10;
+			var y2=player.y/10;
+
+			//var rataEdgi = new monster(2,2,2,0,);
+			//ctx.drawImage();
+			//ctx.drawImage(pantalla,420,0, 380, 290);
+
+			ctx.fillStyle = "black";
+			ctx.fillRect(0,0,canvas.width,canvas.height);
+			ctx.fillStyle = "#3A2B1F";
+			ctx.fillRect(0,0,290,290);
+
+
+			ctx.fillStyle = "#00FF41";
+			salida.paint(ctx);
+
+			ctx.drawImage(jugador,player.x,player.y, 10, 10); 
+//***********************************************************************************************
+			for (var i = ratas.length - 1; i >= 0; i--) {
+				ctx.drawImage(rata,ratas[i].x,ratas[i].y, 10, 10);
+			}
+			for (var i = skull.length - 1; i >= 0; i--) {
+				ctx.drawImage(sk,skull[i].x,skull[i].y, 30, 30);
+			}
+//***********************************************************************************************
+			for (var i = walldos.length - 1; i >= 0; i--) {
+				walldos[i].paint(ctx);
+			}
+			for (var i = food.length - 1; i >= 0; i--) {
+				ctx.drawImage(manzana,food[i].x,food[i].y, 10, 10);
+			}
+			for (var i = keys.length - 1; i >= 0; i--) {
+				ctx.drawImage(llave,keys[i].x,keys[i].y, 10, 10);
+				//keys[i].paint(ctx);
+			}
+			for (var i = doors.length - 1; i >= 0; i--) {
+				doors[i].paint(ctx);
+			}
+
+			//*****************************************************
+			//SHADOW
+			ctx.fillStyle = "#000";
+			ctx.fillRect(player.x+20,10,280-player.x,canvas.height-20);
+			if (player.x>20) {ctx.fillRect(10,10,player.x-20,280);}
+			if (player.y>20) {ctx.fillRect(10,10,280,player.y-20);}
+			ctx.fillRect(10,player.y+20,280,270-player.y);
+
+			for (var j=0; j<30; j++) {
+				for (var i=0; i<30; i++) {
+					//pintar shadow
+					if (ratio(x2,y2,i,j)==true && (maze[j][i]==2||maze[j][i]==5)) {
+						ctx.fillStyle = "#05004E";
+						ctx.fillRect(i*10,j*10,10,10);
+					}
+				}
+			}
+
+			drawScore();
+			drawPause();
+			
+		}
+
+		function block(){
+			if (lastPress==UP) {
+				player.y += 10;
+				if(player.y>=canvas.height){
+					player.y = -10;
+				}				
+			}
+			if (lastPress==DOWN) {
+				player.y -= 10;
+				if(player.y<0){
+					player.y = canvas.height;
+				}
+			}
+			if (lastPress==LEFT) {
+				player.x += 10;
+				if(player.x>canvas.width){
+					player.x = -10;
+				}
+			}
+			if (lastPress==RIGHT) {
+				player.x -= 10;
+				if (player.x<0) {
+					player.x = canvas.width;
+				}
+			}
+		}
+
+		function upt(){	
+
+			if(pause==false&&movent==true&&combate==false){
+				if (lastPress==UP) {
+					player.y -=10;
+					if(player.y<0){
+						player.y = canvas.height;
+					}
+					ponk = false;
+				}
+				if (lastPress==DOWN) {
+					player.y += 10;
+					if(player.y>=canvas.height){
+						player.y = -10;
+					}
+					ponk = false;
+				}
+				if (lastPress==LEFT) {
+					player.x -= 10;
+					if (player.x<0) {
+						player.x = canvas.width;
+					}
+					ponk = false;
+				}
+				if (lastPress==RIGHT) {
+					player.x += 10;
+					if(player.x>canvas.width){
+						player.x = -10;
+					}
+					ponk = false;
+				}
+   				
+   				movent = false;
+
+				for (var i = food.length - 1; i >= 0; i--) {
+					if (player.intersects(food[i])) {
+						food[i].x = -10;
+						food[i].y = -10;
+
+						life+=2;
+					}
+				}
+
+				for (var i = keys.length - 1; i >= 0; i--) {
+					if (player.intersects(keys[i])) {
+						keys[i].x = -10;
+						keys[i].y = -10;
+						
+						llaves+=1;
+					}
+				}
+
+
+				for (var i = walldos.length - 1; i >= 0; i--) {
+					if (player.intersects(walldos[i])) {
+						block();
+					}
+				}
+
+				for (var i = doors.length - 1; i >= 0; i--) {
+					if (player.intersects(doors[i])) {
+						if(llaves>0){
+							doors[i].x = -10;
+							doors[i].y = -10;
+							llaves-=1;
+						}
+						else{block();ponk = true;}
+					}
+				}
+//*********************************************************************************************************
+				for (var i = ratas.length - 1; i >= 0; i--) {
+					if (player.intersects(ratas[i])) {
+						ratas[i].x = -10;
+						ratas[i].y = -10;
+						combate = true;
+						spritename = "rata";
+
+					}
+				}
+				for (var i = skull.length - 1; i >= 0; i--) {
+					if (player.intersects(skull[i])) {
+						skull[i].x = -10;
+						skull[i].y = -10;
+						combate = true;
+						spritename = "sk";
+
+					}
+				}
+				
+			}			
+		}
+
+		//se repite mucho
+		function run(){
+			window.requestAnimationFrame(run);
+			paint(ctx);
+			paintscreen(ctx);
+			upt();
+			drawGameOver();
+
+		}
+
+		function init(){
+			canvas = document.getElementById('canvas');
+			ctx = canvas.getContext('2d');
+
+			
+
+			for (var j=0; j<30; j++) {
+				for (var i=0; i<30; i++) {
+					if (maze[j][i]==2) {
+						walldos.push(new Rectangle((i*10),(j*10),10,10,"#505050"));
+					}
+					if (maze[j][i]==1) {
+						x=i*10;
+						y=j*10;
+					}
+					if (maze[j][i]==3) {
+						food.push(new Rectangle((i*10),(j*10),10,10,"red"));
+					}
+					if (maze[j][i]==4) {
+						keys.push(new Rectangle((i*10),(j*10),10,10,"#FFD800"));
+					}
+					if (maze[j][i]==5) {
+						doors.push(new Rectangle((i*10),(j*10),10,10,"#81582F"));
+					}
+//****************************************************************************************************
+					if (maze[j][i]==6) {
+						ratas.push(new Rectangle((i*10),(j*10),10,10,"red"));
+					}
+					//shadow.push(new Rectangle((i*10),(j*10),10,10,"black"));
+					if (maze[j][i]==7) {
+						skull.push(new Rectangle((i*10),(j*10),30,30,"red"));
+					}
+
+					if (maze[j][i]==8) {
+						salida = new Rectangle((i*10),(j*10),10,10,"gren");
+					}
+
+				}
+			}
+
+			
+
+			player = new Rectangle(x,y,10,10,"#00FF00");
+			tictac();
+			run();
+		}
+
+		window.addEventListener('load',init,false);  
+
+		document.addEventListener('keydown',function(e){
+			if(e.keyCode== 87 || e.keyCode == 38){
+				movent=true;
+				lastPress = UP;
+			}
+			if(e.keyCode== 83 || e.keyCode == 40){
+				movent=true;
+				lastPress = DOWN;
+			}
+			if(e.keyCode== 65 || e.keyCode == 37){
+				movent=true;
+				lastPress = LEFT;
+			}
+			if(e.keyCode== 68 || e.keyCode == 39){
+				movent=true;
+				lastPress = RIGHT;
+			}
+			if(e.keyCode== 31 || e.keyCode == 32 && life>0){
+				//lastPress = SPACE;
+				if(pause==false){pause=true;}
+				else if(pause==true){pause=false;}
+			}
+
+			if(e.keyCode== 90){
+				//lastPress = SPACE;
+				combate=false;
+			}
+			
+			//setTimeout(function() {speed=0;}, 20);
+			
+		})
+		 
+		function random(x){
+			return Math.floor(Math.random()*x)
+		}
+
+	</script>
+
+	
+</body>
+</html>
