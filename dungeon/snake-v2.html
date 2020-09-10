@@ -30,6 +30,10 @@
 		
 	</div>
 	<script type="text/javascript">
+		var audio = new Audio('postpunk.mp3');
+		var audio2 = new Audio('creep.mp3');
+		//audio.play();
+
 		var pause = false;
 		var canvas = null, ctx = null,x=0,y=0; 
 		var UP = 0,LEFT = 1,RIGHT = 2,DOWN = 3,SPACE =4,movent = false;
@@ -297,6 +301,15 @@
 
 			drawScore();
 			drawPause();
+
+			if(combate==false){
+				audio.play();
+				audio2.pause();
+			}
+			else{
+				audio.pause();
+				audio2.play();
+			}
 			
 		}
 
@@ -365,7 +378,7 @@
 					if (player.intersects(food[i])) {
 						food[i].x = -10;
 						food[i].y = -10;
-
+						adScore();
 						life+=2;
 					}
 				}
@@ -403,7 +416,7 @@
 						ratas[i].y = -10;
 						combate = true;
 						spritename = "rata";
-
+						life-=1;
 					}
 				}
 				for (var i = skull.length - 1; i >= 0; i--) {
@@ -412,7 +425,7 @@
 						skull[i].y = -10;
 						combate = true;
 						spritename = "sk";
-
+						life-=2;
 					}
 				}
 				
