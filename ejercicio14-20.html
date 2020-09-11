@@ -24,6 +24,7 @@
 
 		<button id="hide">Hide</button>
 		<button id="show">Show</button>
+		<button id="wepa">Hide Show</button>
 
 		<div class="super_div">
 		<div  id="primer_div" class=" otra_clase mini_div" style="background-color: #2ECC71;"></div>
@@ -47,7 +48,8 @@
 			});
 
 			*/
-
+			/*
+			//16-17
 			$("#show").click(function(){
 			  $("#primer_div").fadeIn();
 			  
@@ -55,6 +57,18 @@
 
 			$("#hide").click(function(){
 			  $("#primer_div").fadeOut();  
+			});*/
+			//18-19
+			$("#hide").click(function(){
+			    $("#primer_div").slideUp();
+			});
+			$("#show").click(function(){
+			    $("#primer_div").slideDown();
+			});
+
+			//20
+			$("#wepa").click(function(){
+			    $("#primer_div").slideToggle();
 			});
 		});
 		
